@@ -37,7 +37,7 @@ This project was built for the OpenAI Open Model Hackathon and is submitted unde
 ## Getting Started
 These instructions will get a copy of the project up and running on your local machine.
  * Clone the repository:
-   git clone https://github.com/Oracle69/Agri-Nexus-AI.git
+   git clone https://github.com/Oracle69digitalmarketing/Agri-Nexus-AI.git
 cd Agri-Nexus-AI
 
  * Install dependencies:
