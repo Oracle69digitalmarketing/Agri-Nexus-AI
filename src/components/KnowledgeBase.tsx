@@ -1,29 +1,45 @@
-import React, { useState } from 'react';
-import { Database, Search, Download, RefreshCw, HardDrive } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Database, Search, Download, RefreshCw, HardDrive, AlertCircle } from 'lucide-react';
+
+interface KnowledgeBaseStats {
+  total_entries: number;
+  categories: { name: string; count: number }[];
+}
 
 const KnowledgeBase = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [stats, setStats] = useState<KnowledgeBaseStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/knowledge-base-stats');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: KnowledgeBaseStats = await response.json();
+        setStats(data);
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
+        setError(`Failed to fetch knowledge base stats. ${errorMessage}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  // Dummy data for parts not yet in the backend API
   const knowledgeStats = {
-    totalEntries: 15420,
-    agricultureEntries: 8950,
-    healthEntries: 4200,
-    livestockEntries: 2270,
     lastUpdate: '2024-01-15',
     storageUsed: '2.3 GB',
-    vectorEmbeddings: 15420
   };
-
-  const categories = [
-    { id: 'all', name: 'All Categories', count: 15420 },
-    { id: 'crops', name: 'Crop Diseases', count: 3200 },
-    { id: 'soil', name: 'Soil Management', count: 2100 },
-    { id: 'livestock', name: 'Livestock Care', count: 2270 },
-    { id: 'health', name: 'Basic Healthcare', count: 4200 },
-    { id: 'nutrition', name: 'Nutrition', count: 1850 },
-    { id: 'pests', name: 'Pest Control', count: 1800 }
-  ];
 
   const recentEntries = [
     {
@@ -73,42 +89,48 @@ const KnowledgeBase = () => {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg flex items-center space-x-2">
+          <AlertCircle className="h-5 w-5" />
+          <p className="text-sm">{error}</p>
+        </div>
+      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Total Entries</h3>
             <Database className="h-6 w-6 text-blue-500" />
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {knowledgeStats.totalEntries.toLocaleString()}
+            {isLoading ? '...' : stats?.total_entries.toLocaleString()}
           </div>
-          <div className="text-sm text-gray-500">Vector embeddings ready</div>
+          <div className="text-sm text-gray-500">Vector embeddings</div>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Agriculture</h3>
-            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+            <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
+             <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {knowledgeStats.agricultureEntries.toLocaleString()}
+            {isLoading ? '...' : stats?.categories.length}
           </div>
-          <div className="text-sm text-gray-500">Farming knowledge</div>
+          <div className="text-sm text-gray-500">Domain categories</div>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Healthcare</h3>
-            <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            <h3 className="text-lg font-semibold text-gray-900">Last Updated</h3>
+             <div className="w-6 h-6 bg-yellow-100 rounded-full flex items-center justify-center">
+              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
             </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">
-            {knowledgeStats.healthEntries.toLocaleString()}
+            {knowledgeStats.lastUpdate}
           </div>
-          <div className="text-sm text-gray-500">Health guidance</div>
+          <div className="text-sm text-gray-500">Last sync</div>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -146,12 +168,22 @@ const KnowledgeBase = () => {
 
             {/* Categories */}
             <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                  selectedCategory === 'all'
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                All Categories ({stats?.total_entries || 0})
+              </button>
+              {stats?.categories.map((category) => (
                 <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
+                  key={category.name}
+                  onClick={() => setSelectedCategory(category.name)}
                   className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                    selectedCategory === category.id
+                    selectedCategory === category.name
                       ? 'bg-green-500 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}

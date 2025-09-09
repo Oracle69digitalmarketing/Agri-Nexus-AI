@@ -1,10 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Leaf, Wifi, WifiOff, Battery, Cpu } from 'lucide-react';
 
+interface SystemStatus {
+  cpu_usage: number;
+  is_online: boolean;
+}
+
 const Header = () => {
-  const isOffline = true; // Simulating offline mode
-  const batteryLevel = 85;
-  const cpuUsage = 23;
+  const [status, setStatus] = useState<SystemStatus | null>(null);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const response = await fetch('/api/system-status');
+        if (response.ok) {
+          const data: SystemStatus = await response.json();
+          setStatus(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch system status for header:", error);
+      }
+    };
+
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 10000); // Refresh every 10 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  const isOnline = status?.is_online ?? false;
+  const cpuUsage = status?.cpu_usage ?? '...';
+  const batteryLevel = 85; // This remains a placeholder for now
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -22,13 +47,13 @@ const Header = () => {
           
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 px-3 py-1 bg-gray-100 rounded-lg">
-              {isOffline ? (
-                <WifiOff className="h-4 w-4 text-gray-600" />
-              ) : (
+              {isOnline ? (
                 <Wifi className="h-4 w-4 text-green-600" />
+              ) : (
+                <WifiOff className="h-4 w-4 text-gray-600" />
               )}
               <span className="text-xs text-gray-600">
-                {isOffline ? 'Offline Mode' : 'Connected'}
+                {isOnline ? 'Online' : 'Offline'}
               </span>
             </div>
             <div className="flex items-center space-x-2 px-3 py-1 bg-gray-100 rounded-lg">

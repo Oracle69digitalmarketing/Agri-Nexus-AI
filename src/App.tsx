@@ -5,6 +5,8 @@ import AIChat from './components/AIChat';
 import VoiceInterface from './components/VoiceInterface';
 import KnowledgeBase from './components/KnowledgeBase';
 import SystemStatus from './components/SystemStatus';
+import AgricultureKB from './components/AgricultureKB';
+import HealthKB from './components/HealthKB';
 
 function App() {
   const [activeSection, setActiveSection] = useState('chat');
@@ -19,7 +21,14 @@ function App() {
         return <KnowledgeBase />;
       case 'system':
         return <SystemStatus />;
+      case 'agriculture':
+        return <AgricultureKB />;
+      case 'health':
+        return <HealthKB />;
       default:
+        // Note: This is a placeholder for unimplemented sections.
+        // The 'community', and 'settings' sections
+        // are not yet implemented and will fall back to this view.
         return (
           <div className="p-6 flex items-center justify-center h-full">
             <div className="text-center">
@@ -32,7 +41,7 @@ function App() {
                 </h3>
                 <p className="text-gray-600 mb-4">This feature is under development</p>
                 <div className="text-sm text-gray-500">
-                  Available modules: AI Chat, Voice Interface, Knowledge Base, System Status
+                  Available modules: AI Chat, Voice Interface, Knowledge Base, System Status, Agriculture KB, Health KB
                 </div>
               </div>
             </div>
