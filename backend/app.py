@@ -142,24 +142,37 @@ def get_system_status():
 @app.get("/api/knowledge-base-stats", response_model=KnowledgeBaseStats, summary="Get Knowledge Base Statistics")
 def get_kb_stats():
     """
-    Returns statistics about the knowledge base.
+    Returns statistics about the knowledge base, including a list of categories.
     """
     if not knowledge_base:
         raise HTTPException(status_code=500, detail="Knowledge base not loaded.")
 
-    # Simulate category detection from the data
-    categories = [
-        {"name": "Crop Diseases", "count": 3},
-        {"name": "Livestock Care", "count": 1},
-        {"name": "Basic Healthcare", "count": 2},
-        {"name": "Pest Control", "count": 0},
-        {"name": "Soil Management", "count": 0}
-    ]
+    category_counts = {}
+    for item in knowledge_base:
+        category = item.get("category", "Uncategorized")
+        category_counts[category] = category_counts.get(category, 0) + 1
+
+    categories = [{"name": name, "count": count} for name, count in category_counts.items()]
 
     return {
         "total_entries": len(knowledge_base),
         "categories": categories
     }
+
+class KnowledgeSearchRequest(BaseModel):
+    category: str
+
+@app.post("/api/knowledge-base/search", summary="Search Knowledge Base by Category")
+def search_kb(request: KnowledgeSearchRequest):
+    """
+    Searches the knowledge base for entries in a specific category.
+    """
+    if not knowledge_base:
+        raise HTTPException(status_code=500, detail="Knowledge base not loaded.")
+
+    results = [item for item in knowledge_base if item.get("category") == request.category]
+
+    return results
 
 # --- Placeholder Endpoints from Documentation ---
 
