@@ -1,16 +1,44 @@
-import React from 'react';
-import { Cpu, HardDrive, Thermometer, Zap, Wifi, Database, Brain, Mic } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Cpu, HardDrive, Thermometer, Zap, Wifi, Database, Brain, Mic, AlertCircle, RefreshCw } from 'lucide-react';
+
+interface SystemMetrics {
+  cpu_usage: number;
+  memory_usage: number;
+  storage_usage: number;
+  temperature: number;
+  is_online: boolean;
+}
 
 const SystemStatus = () => {
-  const systemMetrics = {
-    cpu: { usage: 23, temperature: 45, cores: 4 },
-    memory: { used: 2.1, total: 8, percentage: 26 },
-    storage: { used: 28, total: 64, percentage: 44 },
-    temperature: 45,
-    power: { voltage: 5.1, current: 2.3, status: 'stable' },
-    uptime: '2 days, 14 hours'
+  const [metrics, setMetrics] = useState<SystemMetrics | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchStatus = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/system-status');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data: SystemMetrics = await response.json();
+      setMetrics(data);
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
+      setError(`Failed to fetch system status. ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 10000); // Refresh every 10 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  // Dummy data for services, as this is not yet in the backend API
   const aiServices = [
     { name: 'GPT-OSS-20B Model', status: 'running', cpu: 15, memory: 1.2 },
     { name: 'FAISS Vector Store', status: 'running', cpu: 3, memory: 0.8 },
@@ -19,29 +47,11 @@ const SystemStatus = () => {
     { name: 'FastAPI Server', status: 'running', cpu: 1, memory: 0.1 }
   ];
 
+  // Dummy data for network, as this is not yet in the backend API
   const networkStatus = {
-    offline: true,
     lastSync: '3 days ago',
     pendingUpdates: 2,
     localQueries: 1247
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'running': return 'text-green-600';
-      case 'warning': return 'text-yellow-600';
-      case 'error': return 'text-red-600';
-      default: return 'text-gray-600';
-    }
-  };
-
-  const getStatusBg = (status: string) => {
-    switch (status) {
-      case 'running': return 'bg-green-100';
-      case 'warning': return 'bg-yellow-100';
-      case 'error': return 'bg-red-100';
-      default: return 'bg-gray-100';
-    }
   };
 
   return (
@@ -52,21 +62,30 @@ const SystemStatus = () => {
       </div>
 
       {/* Hardware Metrics */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg flex items-center space-x-2">
+          <AlertCircle className="h-5 w-5" />
+          <p className="text-sm">{error}</p>
+          <button onClick={fetchStatus} className="ml-auto p-1 text-red-700 hover:bg-red-100 rounded-full">
+            <RefreshCw className="h-4 w-4" />
+          </button>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">CPU Usage</h3>
             <Cpu className="h-6 w-6 text-blue-500" />
           </div>
-          <div className="text-3xl font-bold text-gray-900 mb-2">{systemMetrics.cpu.usage}%</div>
+          <div className="text-3xl font-bold text-gray-900 mb-2">{metrics ? `${metrics.cpu_usage}%` : '...'}</div>
           <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
             <div 
               className="bg-blue-500 h-2 rounded-full" 
-              style={{ width: `${systemMetrics.cpu.usage}%` }}
+              style={{ width: `${metrics?.cpu_usage || 0}%` }}
             ></div>
           </div>
           <div className="text-sm text-gray-500">
-            {systemMetrics.cpu.cores} cores • {systemMetrics.cpu.temperature}°C
+            {isLoading ? 'Loading...' : 'Real-time CPU load'}
           </div>
         </div>
 
@@ -75,15 +94,15 @@ const SystemStatus = () => {
             <h3 className="text-lg font-semibold text-gray-900">Memory</h3>
             <HardDrive className="h-6 w-6 text-green-500" />
           </div>
-          <div className="text-3xl font-bold text-gray-900 mb-2">{systemMetrics.memory.percentage}%</div>
+          <div className="text-3xl font-bold text-gray-900 mb-2">{metrics ? `${metrics.memory_usage}%` : '...'}</div>
           <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
             <div 
               className="bg-green-500 h-2 rounded-full" 
-              style={{ width: `${systemMetrics.memory.percentage}%` }}
+              style={{ width: `${metrics?.memory_usage || 0}%` }}
             ></div>
           </div>
-          <div className="text-sm text-gray-500">
-            {systemMetrics.memory.used}GB / {systemMetrics.memory.total}GB
+           <div className="text-sm text-gray-500">
+            {isLoading ? 'Loading...' : 'RAM usage'}
           </div>
         </div>
 
@@ -92,15 +111,15 @@ const SystemStatus = () => {
             <h3 className="text-lg font-semibold text-gray-900">Storage</h3>
             <Database className="h-6 w-6 text-purple-500" />
           </div>
-          <div className="text-3xl font-bold text-gray-900 mb-2">{systemMetrics.storage.percentage}%</div>
+          <div className="text-3xl font-bold text-gray-900 mb-2">{metrics ? `${metrics.storage_usage}%` : '...'}</div>
           <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
             <div 
               className="bg-purple-500 h-2 rounded-full" 
-              style={{ width: `${systemMetrics.storage.percentage}%` }}
+              style={{ width: `${metrics?.storage_usage || 0}%` }}
             ></div>
           </div>
-          <div className="text-sm text-gray-500">
-            {systemMetrics.storage.used}GB / {systemMetrics.storage.total}GB
+           <div className="text-sm text-gray-500">
+            {isLoading ? 'Loading...' : 'Local storage usage'}
           </div>
         </div>
 
@@ -109,14 +128,16 @@ const SystemStatus = () => {
             <h3 className="text-lg font-semibold text-gray-900">Temperature</h3>
             <Thermometer className="h-6 w-6 text-orange-500" />
           </div>
-          <div className="text-3xl font-bold text-gray-900 mb-2">{systemMetrics.temperature}°C</div>
+          <div className="text-3xl font-bold text-gray-900 mb-2">{metrics ? `${metrics.temperature}°C` : '...'}</div>
           <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
             <div 
               className="bg-orange-500 h-2 rounded-full" 
-              style={{ width: `${(systemMetrics.temperature / 80) * 100}%` }}
+              style={{ width: `${metrics ? (metrics.temperature / 80) * 100 : 0}%` }}
             ></div>
           </div>
-          <div className="text-sm text-gray-500">Normal operating range</div>
+           <div className="text-sm text-gray-500">
+            {isLoading ? 'Loading...' : 'Core temperature'}
+          </div>
         </div>
       </div>
 

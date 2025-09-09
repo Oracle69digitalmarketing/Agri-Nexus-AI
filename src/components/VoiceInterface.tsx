@@ -25,7 +25,9 @@ const VoiceInterface = () => {
     setIsListening(!isListening);
     if (!isListening) {
       setCurrentQuery("Listening...");
-      // Simulate speech recognition
+      // Note: This is a simulated speech recognition.
+      // In a real application, this would use the browser's microphone API
+      // to capture audio and send it to the backend for processing with Whisper.cpp.
       setTimeout(() => {
         setCurrentQuery("How do I treat sick chickens?");
         setIsListening(false);
@@ -39,7 +41,9 @@ const VoiceInterface = () => {
     setIsSpeaking(!isSpeaking);
     if (!isSpeaking) {
       setLastResponse("For sick chickens, first isolate them from healthy birds. Check for symptoms like lethargy, loss of appetite, or unusual discharge. Provide clean water and consider basic antibiotics if available. Contact a veterinarian if symptoms persist.");
-      // Simulate text-to-speech duration
+      // Note: This is a simulated text-to-speech.
+      // In a real application, this would take the AI's text response and send it
+      // to the backend to be converted to audio, which would then be played in the browser.
       setTimeout(() => {
         setIsSpeaking(false);
       }, 8000);

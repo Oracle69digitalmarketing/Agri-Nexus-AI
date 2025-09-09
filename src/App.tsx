@@ -20,6 +20,9 @@ function App() {
       case 'system':
         return <SystemStatus />;
       default:
+        // Note: This is a placeholder for unimplemented sections.
+        // The 'agriculture', 'health', 'community', and 'settings' sections
+        // are not yet implemented and will fall back to this view.
         return (
           <div className="p-6 flex items-center justify-center h-full">
             <div className="text-center">
