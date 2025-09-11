@@ -10,8 +10,8 @@ To democratize access to agricultural and healthcare knowledge for the 3.7 billi
 
 ---
 
-🚀 Live Demo
-Try it here: Agri-Nexus AI Demo
+🚀 Explainer Video https://youtu.be/jYaBnGv91Xs?si=xXIswZ0HZaRUpzie
+: Agri-Nexus AI
 
 ---
 
