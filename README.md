@@ -173,6 +173,10 @@ git checkout -b feature/amazing-feature
 git commit -m "Add amazing feature"
 git push origin feature/amazing-feature
 `
+Backend
+`bash
+cd backend
+./start.sh
 
 Open a Pull Request and let’s build together.
 
