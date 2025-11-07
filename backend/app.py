@@ -64,25 +64,46 @@ class AskResponse(BaseModel):
     confidence: float
     context: list[str]
 
-class SystemMetrics(BaseModel):
-    cpu_usage: int
-    memory_usage: int
-    storage_usage: int
-    temperature: int
-    is_online: bool
+# --- Placeholder for a real language detection function ---
+def detect_language(query: str) -> str:
+    """
+    Detects the language of the query.
+    Returns 'en' for English or 'st' for Sesotho.
+    """
+    # A simple keyword-based detection for demonstration.
+    if "lumela" in query.lower() or "thusa" in query.lower():
+        return "st"
+    return "en"
 
-class KnowledgeBaseStats(BaseModel):
-    total_entries: int
-    categories: list[dict]
+# --- Prompt Templates ---
+PROMPT_TEMPLATES = {
+    "en": """
+You are Agri-Nexus AI, an expert assistant for farmers in Lesotho.
+Your goal is to provide clear, concise, and actionable advice based on the provided context.
+If the context doesn't contain the answer, say "I don't have enough information to answer that."
 
-class KnowledgeSearchRequest(BaseModel):
-    category: str
+User's Question:
+{query}
 
-class VoiceRequest(BaseModel):
-    audio_data: bytes
+Relevant Information:
+{context}
 
-class SyncRequest(BaseModel):
-    dataset_url: str
+Answer in English:
+""",
+    "st": """
+U Agri-Nexus AI, mothusi ea hloahloa oa lihoai tsa Lesotho.
+Sepheo sa hau ke ho fana ka likeletso tse hlakileng, tse khutšoane le tse sebetsang ho latela tlhahisoleseding e fanoeng.
+Haeba tlhahisoleseding e sa fane ka karabo, e re "Ha ke na tlhahisoleseding e lekaneng ho araba potso eo."
+
+Potso ea Mosebelisi:
+{query}
+
+Tlhahisoleseding e Amanang:
+{context}
+
+Karabo ka Sesotho:
+"""
+}
 
 # --- API Endpoints ---
 
@@ -102,10 +123,14 @@ def ask(request: AskRequest):
     retrieved_context = [knowledge_base[i] for i in indices[0]]
     context_for_response = [f"Q: {c['question']}\nA: {c['answer']}" for c in retrieved_context]
 
-    # --- Real GPT-OSS Response via Ollama ---
     context_text = "\n\n".join(context_for_response)
-    prompt = f"{request.query}\n\nContext:\n{context_text}"
 
+    # --- Localized Prompt Generation ---
+    lang = detect_language(request.query)
+    prompt_template = PROMPT_TEMPLATES.get(lang, PROMPT_TEMPLATES["en"])
+    prompt = prompt_template.format(query=request.query, context=context_text)
+
+    # --- Real GPT-OSS Response via Ollama ---
     try:
         result = subprocess.run(
             ["ollama", "run", "gpt-oss:20b"],
@@ -131,6 +156,26 @@ def ask(request: AskRequest):
         "confidence": round(confidence, 2),
         "context": context_for_response
     }
+
+class SystemMetrics(BaseModel):
+    cpu_usage: int
+    memory_usage: int
+    storage_usage: int
+    temperature: int
+    is_online: bool
+
+class KnowledgeBaseStats(BaseModel):
+    total_entries: int
+    categories: list[dict]
+
+class KnowledgeSearchRequest(BaseModel):
+    category: str
+
+class VoiceRequest(BaseModel):
+    audio_data: bytes
+
+class SyncRequest(BaseModel):
+    dataset_url: str
 
 @app.get("/api/system-status", response_model=SystemMetrics, summary="Get System Metrics")
 def get_system_status():

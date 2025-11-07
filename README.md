@@ -1,215 +1,38 @@
-🌾 Agri-Nexus AI
-Bridging the Digital Divide in Agriculture and Healthcare
+# Agri-Nexus AI: An AI-Powered Agricultural Extension Chatbot for Lesotho
 
-Agri-Nexus AI is a local-first, offline AI agent built on GPT-OSS-20B, designed to deliver expert agricultural and health intelligence to underserved communities—without needing internet access. Optimized for low-cost hardware like Raspberry Pi 5, it empowers rural users with voice and text-based insights in multiple languages.
+**A GENIE.AI-Aligned Pilot for the IEEE-ITU "GenAI for Good Challenge"**
 
----
+Agri-Nexus AI is an AI-powered chatbot designed to provide real-time, context-aware agricultural advice to farmers in Lesotho. This project is being developed as part of the **IEEE-ITU "GenAI for Good Challenge"** and is aligned with the **GENIE.AI framework**, ITU's open-source AI infrastructure for public services.
 
-🎯 Vision
-To democratize access to agricultural and healthcare knowledge for the 3.7 billion people without reliable internet. Agri-Nexus AI is scalable, impactful, and tailored for emerging markets.
+## The Challenge: Connecting the World and Beyond
 
----
+The International Telecommunication Union (ITU) is celebrating its 160th anniversary with a vision of "Connecting the World and Beyond." This initiative aims to move beyond basic connectivity and toward intelligent, equitable digital ecosystems, particularly in the Global South. The **GenAI for Good Challenge** is a key part of this vision, and Agri-Nexus AI is a direct response to this call to action.
 
-🚀 Explainer Video https://youtu.be/jYaBnGv91Xs?si=xXIswZ0HZaRUpzie
-: Agri-Nexus AI
+## The Solution: Agri-Nexus AI
 
----
+Agri-Nexus AI is a localized, AI-powered chatbot that provides farmers in Lesotho with access to critical agricultural information in their native language, Sesotho. The chatbot is built on the principles of the **GENIE.AI framework**, which emphasizes:
 
-🌟 Key Features
+- **Open Source:** The project is fully transparent, auditable, and customizable.
+- **GovStack Alignment:** The chatbot is designed to integrate with national digital public infrastructures.
+- **RAG + Modular AI Stack:** The chatbot uses a Retrieval-Augmented Generation (RAG) pipeline to provide accurate and contextually relevant information.
+- **Inclusive Language Design:** The chatbot supports both Sesotho and English, ensuring that it is accessible to all farmers in Lesotho.
 
-🤖 AI-Powered Intelligence
-- GPT-OSS-20B: Fine-tuned for agriculture and health  
-- FAISS Vector Store: 15,000+ domain-specific entries  
-- Offline Operation: No internet required  
-- Multi-language Support: English, Swahili, French, Hausa  
+## Features
 
-🎤 Voice Interface
-- Speech Recognition: Offline via Whisper.cpp  
-- Text-to-Speech: Audio responses for non-literate users  
-- Natural Language Input: Speak queries in local dialects  
+- **Localized Knowledge Base:** The chatbot is trained on a curated dataset of agricultural information specific to Lesotho.
+- **Multilingual Support:** The chatbot can understand and respond to queries in both Sesotho and English.
+- **Multi-channel Access:** The chatbot is accessible via WhatsApp, SMS, and a web-based interface.
+- **Farmer Profiling:** The chatbot can personalize its advice based on a farmer's location, crop type, and other factors.
+- **Admin Dashboard:** The chatbot includes a dashboard for monitoring usage and gathering insights.
 
-📚 Knowledge Base
-- Crop diseases, soil management, pest control  
-- Basic healthcare, first aid, preventive care  
-- Livestock health and veterinary guidance  
-- Region-specific customization  
+## Getting Started
 
-💻 Hardware Optimization
-- Runs on Raspberry Pi 5 and consumer PCs  
-- Energy-efficient for rural deployments  
-- Compatible with solar power setups  
+To get started with Agri-Nexus AI, please refer to the [HOW-TO.md](HOW-TO.md) file for detailed instructions on how to set up the development environment, run the application, and run the tests.
 
----
+## Contributing
 
-🏗️ System Architecture
+We welcome contributions to Agri-Nexus AI. Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information on how to get involved.
 
-`
-┌────────────┐    ┌──────────────┐    ┌────────────┐
-│  Frontend  │ ←→ │   Backend    │ ←→ │  Hardware  │
-│ React UI   │    │ FastAPI      │    │ Raspberry  │
-│ Voice I/O  │    │ GPT-OSS-20B  │    │ FAISS Store│
-│ Multilang  │    │ Vector Search│    │ Offline AI │
-└────────────┘    └──────────────┘    └────────────┘
-`
+## License
 
----
-
-🛠️ Tech Stack
-
-Frontend
-- React 18.3.1  
-- TypeScript  
-- Tailwind CSS  
-- Vite  
-- Lucide Icons  
-
-Backend
-- Python + FastAPI  
-- FAISS for vector search  
-- Ollama for model serving  
-- SpeechRecognition + pyttsx3  
-
-Hardware
-- Raspberry Pi 5  
-- Docker (optional)  
-- Solar-compatible  
-
----
-
-⚡ Quick Start
-
-Prerequisites
-- Node.js 18+  
-- Python 3.10+  
-- Conda or virtualenv  
-
-Frontend Setup
-`bash
-git clone https://github.com/Oracle69digitalmarketing/Agri-Nexus-AI.git
-cd Agri-Nexus-AI
-npm install
-npm run dev
-`
-
-Visit: http://localhost:5173
-
-Backend Setup
-`bash
-cd backend
-pip install -r requirements.txt
-python vector_store.py
-uvicorn app:app --reload --host 0.0.0.0 --port 8000
-`
-
-Visit: http://localhost:8000/docs
-
----
-
-🧪 API Testing
-
-Endpoint: /query
-Send a POST request with:
-
-`json
-{
-  "query": "What are the symptoms of cassava mosaic disease?"
-}
-`
-
-Expected response:
-`json
-{
-  "answer": "Cassava mosaic disease causes leaf distortion, yellowing, and stunted growth..."
-}
-`
-
----
-
-📊 Impact Metrics
-
-- Internet Gap: 3.7B people lack reliable access  
-- Crop Loss Reduction: Early disease detection  
-- Health Outcomes: First aid and preventive care  
-- Community Reach: One device serves entire villages  
-
----
-
-🎯 Use Cases
-
-👩‍🌾 Farmers
-- Diagnose crop diseases  
-- Fertilizer schedules and soil advice  
-- Livestock health monitoring  
-
-🏥 Health Workers
-- First aid and emergency protocols  
-- Preventive care guidance  
-- Health education  
-
-🏢 NGOs & Cooperatives
-- Deploy community knowledge hubs  
-- Scale expert knowledge offline  
-- Empower local communities  
-
----
-
-🔧 Extension Points
-
-- Add New Data: Drop into datasets/*.json, rebuild with vector_store.py  
-- Fine-Tune Models: Customize GPT-OSS-20B with local data  
-- Hardware Scaling: Raspberry Pi → PC → GPU rigs  
-- Off-Grid Ready: Solar-powered deployments  
-
----
-
-🤝 Contributing
-
-We welcome contributions!  
-
-`bash
-
-Fork and clone
-git checkout -b feature/amazing-feature
-git commit -m "Add amazing feature"
-git push origin feature/amazing-feature
-`
-Backend
-`bash
-cd backend
-./start.sh
-
-Open a Pull Request and let’s build together.
-
----
-
-📄 License
-MIT License — see LICENSE file for details.
-
----
-
-🌍 Global Impact
-
-Agri-Nexus AI is built for the billions underserved by digital infrastructure. By enabling offline access to expert knowledge, we aim to improve food security, health outcomes, and community resilience worldwide.
-
----
-
-📬 Submission Details
-
-- Submitted by: Prince (Oracle69digitalmarketing)  
-- Project: Agri-Nexus AI  
-- Date: September 2025  
-- Branch: main  
-- Release Tag: v1.0  
-
----
-
-📞 Contact & Support
-
-- Website: agri-nexus-ai-c3m8.bolt.host  
-- GitHub: Agri-Nexus-AI  
-- Issues: Use GitHub Issues tab to report bugs or request features  
-
----
-
-🌾 Empowering Rural Communities Through AI  
-Built with ❤️ for global impact.
+Agri-Nexus AI is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for more information.
