@@ -3,6 +3,8 @@ import json
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 import os
@@ -219,6 +221,19 @@ def voice_query(request: VoiceRequest):
 @app.post("/api/sync", summary="Sync New Datasets (Placeholder)")
 def sync_data(request: SyncRequest):
     raise HTTPException(status_code=501, detail="Data sync not implemented yet.")
+
+# --- Serve Static Files ---
+STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dist")
+
+if os.path.exists(STATIC_DIR):
+    app.mount("/assets", StaticFiles(directory=os.path.join(STATIC_DIR, "assets")), name="assets")
+
+    @app.get("/{catch_all:path}", response_class=FileResponse)
+    def serve_frontend(catch_all: str):
+        file_path = os.path.join(STATIC_DIR, catch_all)
+        if os.path.exists(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(STATIC_DIR, "index.html"))
 
 if __name__ == '__main__':
     import uvicorn

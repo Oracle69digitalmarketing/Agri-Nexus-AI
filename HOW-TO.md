@@ -9,6 +9,7 @@ This document outlines the steps required to build, test, and deploy the Agri-Ne
 - Python (v3.9 or higher)
 - pip
 - npm
+- Docker
 
 ### Installation
 1. **Clone the repository:**
@@ -45,7 +46,21 @@ npm run dev
 ```
 The application will be available at `http://localhost:5173`.
 
-## 3. Running Tests
+## 3. Running with Docker
+
+To build and run the application with Docker, use the following commands:
+
+1. **Build the Docker image:**
+   ```bash
+   docker build -t agri-nexus-ai .
+   ```
+2. **Run the Docker container:**
+   ```bash
+   docker run -p 8000:8000 agri-nexus-ai
+   ```
+The application will be available at `http://localhost:8000`.
+
+## 4. Running Tests
 
 To run the test suite, use the following command:
 ```bash
@@ -53,7 +68,7 @@ npm test
 ```
 This will execute all the tests in the `src/components/__tests__` directory.
 
-## 4. Aligning with the GenAI for Good Challenge
+## 5. Aligning with the GenAI for Good Challenge
 
 To align the project with the GenAI for Good Challenge, follow these steps:
 
