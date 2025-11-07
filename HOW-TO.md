@@ -30,7 +30,7 @@ This document outlines the steps required to build, test, and deploy the Agri-Ne
    python backend/vector_store.py
    ```
 
-## 2. Running the Application
+## 2. Running the Application without Docker
 
 ### Backend
 To start the FastAPI server, run the following command from the root directory:
@@ -46,19 +46,39 @@ npm run dev
 ```
 The application will be available at `http://localhost:5173`.
 
-## 3. Running with Docker
+## 3. Building and Running with Docker
 
-To build and run the application with Docker, use the following commands:
+The `Dockerfile` in this project is designed to create a self-contained, optimized image that runs the entire application.
 
-1. **Build the Docker image:**
-   ```bash
-   docker build -t agri-nexus-ai .
-   ```
-2. **Run the Docker container:**
-   ```bash
-   docker run -p 8000:8000 agri-nexus-ai
-   ```
-The application will be available at `http://localhost:8000`.
+### Step 1: Build the Docker Image
+
+To build the Docker image, run the following command from the root directory of the project:
+```bash
+docker build -t agri-nexus-ai .
+```
+
+**What this command does:**
+*   `docker build`: The command to build a Docker image from a `Dockerfile`.
+*   `-t agri-nexus-ai`: The `-t` flag tags the image with the name `agri-nexus-ai`, making it easy to reference later.
+*   `.`: This specifies the build context (the current directory), giving Docker access to all project files.
+
+This command will execute the multi-stage build defined in the `Dockerfile`:
+1.  **Stage 1 (Frontend Build):** It builds the React application and creates optimized static files.
+2.  **Stage 2 (Final Image):** It copies the backend code and the built frontend files into a lightweight Python image, discarding all the build-time dependencies to keep the image small and secure.
+
+### Step 2: Run the Docker Container
+
+Once the build is complete, you can run the application as a container with this command:
+```bash
+docker run -p 8000:8000 agri-nexus-ai
+```
+
+**What this command does:**
+*   `docker run`: The command to start a new container from an image.
+*   `-p 8000:8000`: This maps port `8000` on your host machine to port `8000` inside the container, allowing you to access the application.
+*   `agri-nexus-ai`: The name of the image to run.
+
+The application will now be available at **`http://localhost:8000`**.
 
 ## 4. Running Tests
 
