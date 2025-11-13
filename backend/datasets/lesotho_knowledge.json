@@ -1,0 +1,33 @@
+
+[
+  {
+    "question": "What are the best maize varieties to grow in the Lesotho highlands?",
+    "answer": "For the Lesotho highlands, it is best to plant short-season hybrid maize varieties that are tolerant to cold and frost. Varieties like Pannar 53 and DKC 64-10 have shown good results. Early planting in September or October is crucial to avoid frost damage at the end of the season.",
+    "category": "Crop Management"
+  },
+  {
+    "question": "How can I prevent soil erosion on my farm?",
+    "answer": "To prevent soil erosion in Lesotho's hilly terrain, you can use techniques like contour farming, building terraces, and planting cover crops like vetch or rye. Minimizing tillage (no-till farming) and creating stone lines can also help slow down water runoff and protect the topsoil.",
+    "category": "Soil Management"
+  },
+  {
+    "question": "When is the best time to plant sorghum in Lesotho?",
+    "answer": "The ideal planting time for sorghum in Lesotho is from late October to early December. This allows the crop to establish itself before the peak summer rains and mature before the first frost. Soil temperature should be at least 18°C for good germination.",
+    "category": "Crop Management"
+  },
+  {
+    "question": "What is the market price for beans in Maseru?",
+    "answer": "As of November 2025, the average market price for dry beans in Maseru is approximately LSL 15-20 per kilogram. Prices can fluctuate based on supply, demand, and quality. Check with the Ministry of Agriculture's market information service for the most current prices.",
+    "category": "Market Information"
+  },
+  {
+    "question": "How do I control the cutworm pest in my vegetable garden?",
+    "answer": "Cutworms are a common pest in Lesotho. To control them, you can place collars made of cardboard or plastic around the base of young plants. You can also apply wood ash or diatomaceous earth around the stems. Hand-picking the caterpillars at night when they are most active is also an effective method.",
+    "category": "Pest Control"
+  },
+  {
+    "question": "What are the symptoms of lumpy skin disease in cattle?",
+    "answer": "Lumpy skin disease is a viral infection in cattle. The main symptoms are firm, raised nodules on the skin, fever, loss of appetite, and nasal discharge. It is important to vaccinate your cattle annually to prevent this disease. If you suspect an outbreak, contact your local veterinary services immediately.",
+    "category": "Livestock Care"
+  }
+]
